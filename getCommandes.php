@@ -8,7 +8,6 @@ if($token !== 'pizza_admin_token') {
     echo json_encode(['success' => false, 'message' => 'Accès refusé']);
     exit();
 }
-
 $stmt = $pdo->query('SELECT c.ID_commande, c.nom_prenom, c.date_heure, p.nom, cp.quantite 
       FROM commandes c 
       JOIN commandes_pizzas cp ON c.ID_commande = cp.ID_commande 
