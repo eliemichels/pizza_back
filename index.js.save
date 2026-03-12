@@ -14,14 +14,14 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if(err) return res.status(500).json({error: "y'a un probleme mdr"});
+  if(err) throw err;
   console.log('Connecté à la BDD');
 });
 
 // GET toutes les pizzas
 app.get('/pizzas', (req, res) => {
   db.query('SELECT * FROM pizzas', (err, results) => {
-    if(err) return res.status(500).json({error: "ya un probleme mdr"});
+    if(err) throw err;
     res.json(results);
   });
 });
@@ -29,7 +29,7 @@ app.get('/pizzas', (req, res) => {
 // GET une pizza
 app.get('/pizzas/:id', (req, res) => {
   db.query('SELECT * FROM pizzas WHERE ID = ?', [req.params.id], (err, results) => {
-    if(err) return res.staus(500).json({error: "ya un probleme mdr"});
+    if(err) throw err;
     res.json(results[0]);
   });
 });
@@ -38,7 +38,7 @@ app.get('/pizzas/:id', (req, res) => {
 app.post('/commandes', (req, res) => {
   const { nom_prenom, pizzas } = req.body;
   db.query('INSERT INTO commandes (nom_prenom, date_heure) VALUES (?, NOW())', [nom_prenom], (err, result) => {
-    if(err) return res.status(500).json({error: "ya un probleme mdr"});
+    if(err) throw err;
     const id_commande = result.insertId;
     pizzas.forEach(pizza => {
       db.query('INSERT INTO commandes_pizzas (ID_commande, ID_pizza, quantite) VALUES (?, ?, ?)',
@@ -52,7 +52,7 @@ app.post('/commandes', (req, res) => {
 app.post('/login', (req, res) => {
   const { login, mdp } = req.body;
   db.query('SELECT * FROM admin WHERE login = ? AND mdp = SHA2(?, 256)', [login, mdp], (err, results) => {
-    if(err) return res.status(500).json({error : "ya un probleme mdr"});
+    if(err) throw err;
     if(results.length > 0) {
       res.json({ success: true, token: 'pizza_admin_token' });
     } else {
@@ -71,7 +71,7 @@ app.get('/commandes', (req, res) => {
             FROM commandes c 
             JOIN commandes_pizzas cp ON c.ID_commande = cp.ID_commande 
             JOIN pizzas p ON cp.ID_pizza = p.ID`, (err, results) => {
-    if(err) return res.status(500).json({ error: "ya un probleme mdr"}) ;
+    if(err) throw err;
     res.json(results);
   });
 });
