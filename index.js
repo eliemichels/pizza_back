@@ -14,7 +14,7 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-  if(err) return res.status(500).json({error: "y'a un probleme mdr"});
+  if(err) throw err;
   console.log('Connecté à la BDD');
 });
 
@@ -29,7 +29,7 @@ app.get('/pizzas', (req, res) => {
 // GET une pizza
 app.get('/pizzas/:id', (req, res) => {
   db.query('SELECT * FROM pizzas WHERE ID = ?', [req.params.id], (err, results) => {
-    if(err) return res.staus(500).json({error: "ya un probleme mdr"});
+    if(err) return res.status(500).json({error: "ya un probleme mdr"});
     res.json(results[0]);
   });
 });
